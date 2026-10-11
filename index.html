@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="UniForge3D: Joint 3D Reconstruction and Generation in a Shared Anchor-Guided Space.">
+  <meta property="og:title" content="UniForge3D: Joint 3D Reconstruction and Generation in a Shared Anchor-Guided Space">
+  <meta property="og:description" content="Research by Wenjue Chen, Wenyue Chen, Heliang Zheng, Rongfei Jia, Yuan Liu, and Meng Li.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://xishuxishu.github.io/uniforge3d-project/assets/poster-settled.webp">
+  <meta property="og:url" content="https://xishuxishu.github.io/uniforge3d-project/">
+  <link rel="canonical" href="https://xishuxishu.github.io/uniforge3d-project/">
+  <title>UniForge3D | Joint 3D Reconstruction and Generation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" href="assets/poster-start.webp" as="image" fetchpriority="high">
+  <script defer src="site-config.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="comparisons.js"></script>
+</head>
+<body>
+  <main>
+    <header class="paper-header">
+      <h1>
+        <span class="project-name">UniForge<span class="dimension">3D</span><span class="sr-only">:</span></span>
+        <span class="paper-title">Joint 3D Reconstruction and Generation<br class="title-break"> in a Shared Anchor-Guided Space</span>
+      </h1>
+
+      <ul class="authors" aria-label="Authors">
+        <li>Wenjue Chen<sup>1,*</sup></li>
+        <li>Wenyue Chen<sup>1,2,*</sup></li>
+        <li>Heliang Zheng<sup>2</sup></li>
+        <li>Rongfei Jia<sup>2</sup></li>
+        <li>Yuan Liu<sup>3,&dagger;</sup></li>
+        <li>Meng Li<sup>1,&dagger;</sup></li>
+      </ul>
+      <ul class="affiliations" aria-label="Affiliations">
+        <li><sup>1</sup>Peking University</li>
+        <li><sup>2</sup>Math Magic</li>
+        <li><sup>3</sup>The Hong Kong University of Science and Technology</li>
+      </ul>
+      <p class="contributions"><span>* Equal contribution</span><span>&dagger; Corresponding authors</span></p>
+
+      <nav class="resources" aria-label="Paper and code">
+        <span class="resource-slot">
+          <a class="resource-link paper-link" data-resource="paper" role="link" aria-disabled="true" tabindex="0" aria-describedby="paper-link-status">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#file-text"></use></svg>
+            <span>Paper <span class="format">PDF</span></span>
+          </a>
+          <span class="resource-tooltip" id="paper-link-status" role="tooltip">Paper link coming soon</span>
+        </span>
+        <span class="resource-slot">
+          <a class="resource-link code-link" data-resource="code" role="link" aria-disabled="true" tabindex="0" aria-describedby="code-link-status">
+            <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#code-xml"></use></svg>
+            <span>Code</span>
+          </a>
+          <span class="resource-tooltip" id="code-link-status" role="tooltip">Code link coming soon</span>
+        </span>
+      </nav>
+    </header>
+
+    <figure class="teaser" aria-label="UniForge3D results from rendered and real-world images">
+      <video id="teaser-video" width="1800" height="1248" muted playsinline preload="auto" poster="assets/poster-start.webp"
+        aria-label="Ten generated 3D assets descend into the display scene, with their input views above and below."></video>
+      <div class="video-controls" hidden>
+        <button type="button" id="playback" class="icon-button" aria-label="Play video" data-tooltip="Play">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#play"></use></svg>
+        </button>
+        <button type="button" id="fullscreen" class="icon-button" aria-label="Full screen" data-tooltip="Full screen">
+          <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#maximize"></use></svg>
+        </button>
+      </div>
+      <noscript><img src="assets/poster-settled.webp" width="1800" height="1248" alt="UniForge3D generated 3D assets and their input views."><style>#teaser-video{display:none}</style></noscript>
+    </figure>
+
+    <section class="research-section abstract" aria-labelledby="abstract-title">
+      <div class="section-inner abstract-layout">
+      <h2 id="abstract-title">Abstract</h2>
+      <p>Generating complete 3D assets from sparse, unposed images requires preserving observed geometry while completing unseen regions. Joint reconstruction and generation offers a way to address both goals: reconstruction recovers the geometry observed in the input images, while generation contributes learned shape priors. However, combining camera-relative reconstruction with canonical-space generation introduces a coordinate mismatch that makes direct geometric interaction more difficult. Moreover, conditioning each 3D location on all views without accounting for their relevance may mix useful geometric evidence with unrelated image content, hindering local detail recovery. We present <strong>UniForge3D</strong>, which jointly models reconstruction and generation in a shared anchor-guided space, resolving their coordinate mismatch. This space follows the anchor view&rsquo;s azimuth while keeping the object upright. The two branches exchange features bidirectionally to predict per-view point maps and a complete sparse voxel structure. We further condition point-map prediction on the generated structure to establish pixel-to-voxel correspondences and select the most informative input view for each voxel. Features from the selected views then guide detailed shape generation, helping preserve observed geometric details. Our method achieves state-of-the-art appearance and geometry results on Toys4K and GSO, generating complete 3D assets with improved fidelity.</p>
+      </div>
+    </section>
+    <section class="research-section method" id="pipeline-title" aria-labelledby="method-title">
+      <div class="section-inner">
+      <h2 id="method-title">Method</h2>
+      <figure>
+        <a class="pipeline-image" href="assets/pipeline-original.png" target="_blank" rel="noopener" aria-label="View the full-resolution UniForge3D pipeline diagram in a new tab">
+          <img src="assets/pipeline.webp" width="8181" height="2955" loading="lazy" decoding="async" alt="UniForge3D pipeline: anchor-guided joint reconstruction and generation on the left, followed by structure-guided view selection and conditioning on the right.">
+        </a>
+        <figcaption class="method-caption">
+          <div>
+            <h3>Joint reconstruction and generation</h3>
+            <p>The reconstruction and generation branches interact bidirectionally to predict multi-view point maps and a complete sparse structure in a shared anchor-guided space.</p>
+          </div>
+          <div>
+            <h3>Structure-guided view selection</h3>
+            <p>Structure-conditioned point maps establish voxel-to-pixel correspondences, enabling the model to select informative views and use their image features to guide detailed shape generation.</p>
+          </div>
+        </figcaption>
+      </figure>
+      </div>
+    </section>
+    <section class="research-section comparisons" aria-labelledby="comparisons-title" data-video-gallery="comparisons" data-video-label="comparison" data-video-description="3D generation comparison">
+      <div class="section-inner">
+        <h2 id="comparisons-title">Comparisons</h2>
+        <div class="comparison-player" id="comparison-panel" role="tabpanel" aria-labelledby="case-baking">
+          <div class="comparison-screen">
+            <video id="comparison-video" width="1920" height="1080" muted playsinline loop preload="none"
+              poster="assets/comparisons/baking-poster.webp" aria-label="Baking Utensils: 3D generation comparison"></video>
+            <img class="comparison-cover" src="assets/comparisons/baking-poster.webp" width="1920" height="1080"
+              loading="lazy" decoding="async" alt="" aria-hidden="true">
+          </div>
+          <div class="comparison-controls">
+            <button type="button" class="icon-button" id="comparison-playback" data-playback aria-label="Play comparison video" data-tooltip="Play">
+              <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#play"></use></svg>
+            </button>
+            <input id="comparison-seek" class="comparison-seek" type="range" min="0" max="6" value="0" step="0.01"
+              aria-label="Video position" aria-valuetext="0:00 of 0:06">
+            <span class="comparison-time" aria-hidden="true">0:00 / 0:06</span>
+            <button type="button" class="icon-button" id="comparison-fullscreen" data-fullscreen aria-label="Full screen comparison" data-tooltip="Full screen">
+              <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#maximize"></use></svg>
+            </button>
+          </div>
+          <p class="comparison-status" role="status" hidden></p>
+        </div>
+        <div class="comparison-cases" role="tablist" aria-label="Comparison cases">
+          <button class="comparison-case" type="button" role="tab" id="case-baking" aria-label="Baking Utensils, rendered images" aria-controls="comparison-panel" aria-selected="true" tabindex="0" data-case="baking" data-label="Baking Utensils">
+            <span class="case-image"><img src="assets/comparisons/baking-thumb.webp" width="480" height="411" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="case-spongebob" aria-label="SpongeBob, rendered images" aria-controls="comparison-panel" aria-selected="false" tabindex="-1" data-case="spongebob" data-label="SpongeBob">
+            <span class="case-image"><img src="assets/comparisons/spongebob-thumb.webp" width="480" height="411" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="case-figurine" aria-label="Figurine, real-world images" aria-controls="comparison-panel" aria-selected="false" tabindex="-1" data-case="figurine" data-label="Figurine">
+            <span class="case-image"><img src="assets/comparisons/figurine-thumb.webp" width="480" height="411" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="case-ornament" aria-label="Ornament, real-world images" aria-controls="comparison-panel" aria-selected="false" tabindex="-1" data-case="ornament" data-label="Ornament">
+            <span class="case-image"><img src="assets/comparisons/ornament-thumb.webp" width="480" height="411" loading="lazy" alt=""></span>
+          </button>
+        </div>
+        <noscript><p class="comparison-downloads"><a href="assets/comparisons/baking.mp4">Baking Utensils</a> &middot; <a href="assets/comparisons/spongebob.mp4">SpongeBob</a> &middot; <a href="assets/comparisons/figurine.mp4">Figurine</a> &middot; <a href="assets/comparisons/ornament.mp4">Ornament</a></p></noscript>
+      </div>
+    </section>
+    <section class="research-section more-results" aria-labelledby="more-results-title" data-video-gallery="more-results" data-video-label="result" data-video-description="Generated 3D assets (Ours)">
+      <div class="section-inner">
+        <h2 id="more-results-title">More Results</h2>
+        <div class="comparison-player" id="more-results-panel" role="tabpanel" aria-labelledby="result-pair-01">
+          <div class="comparison-screen">
+            <video id="more-results-video" width="1920" height="1080" muted playsinline loop preload="none"
+              poster="assets/more-results/pair-01-poster.webp" aria-label="Robot and ceramic tower: Generated 3D assets (Ours)"></video>
+            <img class="comparison-cover" src="assets/more-results/pair-01-poster.webp" width="1920" height="1080"
+              loading="lazy" decoding="async" alt="" aria-hidden="true">
+          </div>
+          <div class="comparison-controls">
+            <button type="button" class="icon-button" data-playback aria-label="Play result video" data-tooltip="Play">
+              <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#play"></use></svg>
+            </button>
+            <input class="comparison-seek" type="range" min="0" max="3" value="0" step="0.01"
+              aria-label="Result video position" aria-valuetext="0:00 of 0:03">
+            <span class="comparison-time" aria-hidden="true">0:00 / 0:03</span>
+            <button type="button" class="icon-button" data-fullscreen aria-label="Full screen result" data-tooltip="Full screen">
+              <svg class="icon" aria-hidden="true"><use href="assets/icons.svg#maximize"></use></svg>
+            </button>
+          </div>
+          <p class="comparison-status" role="status" hidden></p>
+        </div>
+        <div class="comparison-cases" role="tablist" aria-label="Generated asset pairs">
+          <button class="comparison-case" type="button" role="tab" id="result-pair-01" aria-label="Robot and ceramic tower" aria-controls="more-results-panel" aria-selected="true" tabindex="0" data-case="pair-01" data-label="Robot and ceramic tower">
+            <span class="case-image"><img src="assets/more-results/pair-01-thumb.webp" width="480" height="360" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="result-pair-02" aria-label="Carriage and red figurine" aria-controls="more-results-panel" aria-selected="false" tabindex="-1" data-case="pair-02" data-label="Carriage and red figurine">
+            <span class="case-image"><img src="assets/more-results/pair-02-thumb.webp" width="480" height="360" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="result-pair-03" aria-label="Witch and sculpted head" aria-controls="more-results-panel" aria-selected="false" tabindex="-1" data-case="pair-03" data-label="Witch and sculpted head">
+            <span class="case-image"><img src="assets/more-results/pair-03-thumb.webp" width="480" height="360" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="result-pair-04" aria-label="Cake and mechanical assembly" aria-controls="more-results-panel" aria-selected="false" tabindex="-1" data-case="pair-04" data-label="Cake and mechanical assembly">
+            <span class="case-image"><img src="assets/more-results/pair-04-thumb.webp" width="480" height="360" loading="lazy" alt=""></span>
+          </button>
+          <button class="comparison-case" type="button" role="tab" id="result-pair-05" aria-label="Statue and Sun Wukong figurine" aria-controls="more-results-panel" aria-selected="false" tabindex="-1" data-case="pair-05" data-label="Statue and Sun Wukong figurine">
+            <span class="case-image"><img src="assets/more-results/pair-05-thumb.webp" width="480" height="360" loading="lazy" alt=""></span>
+          </button>
+        </div>
+        <noscript><p class="comparison-downloads"><a href="assets/more-results/pair-01.mp4">Robot and ceramic tower</a> &middot; <a href="assets/more-results/pair-02.mp4">Carriage and red figurine</a> &middot; <a href="assets/more-results/pair-03.mp4">Witch and sculpted head</a> &middot; <a href="assets/more-results/pair-04.mp4">Cake and mechanical assembly</a> &middot; <a href="assets/more-results/pair-05.mp4">Statue and Sun Wukong figurine</a></p></noscript>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
