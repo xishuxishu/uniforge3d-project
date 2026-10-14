@@ -74,6 +74,11 @@ sup { font-size: .66em; line-height: 0; position: relative; vertical-align: supe
 .comparisons { background: #f8fbfa; }
 .comparisons h2, .more-results h2 { margin-bottom: 30px; }
 .more-results { background: #f2f7f4; }
+.citation { background: #fafcfb; }
+.citation-inner { max-width: 960px; }
+.citation h2 { margin-bottom: 28px; }
+.citation pre { margin: 0; color: #3f514a; font: 13px/1.85 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.citation code { font: inherit; }
 .more-results .comparison-cases { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
 .more-results .case-image { padding: 0; background: transparent; }
 .comparison-player { width: 100%; max-width: 733px; margin: 0 auto; }
